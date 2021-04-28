@@ -1,7 +1,7 @@
--- Tao Database
-DROP DATABASE IF EXISTS Extra_Assignment_1_2;
-CREATE DATABASE Extra_Assignment_1_2;
-USE Extra_Assignment_1_2;
+-- Tao Database Extra_1_2_3
+DROP DATABASE IF EXISTS Extra_Assignment_1_2_3;
+CREATE DATABASE Extra_Assignment_1_2_3;
+USE Extra_Assignment_1_2_3;
 
 -- Ex 1
 -- 1.Tao bang Trainee voi constraint va datatype
@@ -28,15 +28,15 @@ CREATE TABLE IF NOT EXISTS `DataTypes` (
     ID		 			TINYINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
     `Name`				VARCHAR(20) NOT NULL,
     `Code` 				CHAR(5) NOT NULL UNIQUE KEY,
-    ModifiedDate 		TIME NOT NULL
+    ModifiedDate 		DATE NOT NULL
 );
 
 -- Ex 3
 DROP TABLE IF EXISTS `DataTypes2`;
-CREATE TABLE IF NOT EXISTS `DataTypes` (
+CREATE TABLE IF NOT EXISTS `DataTypes2` (
     ID		 			TINYINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
     `Name`				VARCHAR(20) NOT NULL,
     BirthDate			DATE NOT NULL,
-    Gender				BIT DEFAULT NULL,
+    Gender				ENUM('0','1','2'),
     IsDeletedFlag		BIT DEFAULT 0
 );
