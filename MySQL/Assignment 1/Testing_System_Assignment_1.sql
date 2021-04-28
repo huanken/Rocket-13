@@ -27,8 +27,8 @@ CREATE TABLE IF NOT EXISTS `Account` (
 	DepartmentID		TINYINT UNSIGNED NOT NULL,
 	PositionID 			TINYINT UNSIGNED NOT NULL,
     CreateDate 			DATETIME DEFAULT NOW(),
-    FOREIGN KEY (DepartmentID) REFERENCES Department(DepartmentID) ON DELETE CASCADE,
-    FOREIGN KEY (PositionID) REFERENCES `Position`(PositionID) ON DELETE CASCADE
+    FOREIGN KEY (DepartmentID) REFERENCES Department(DepartmentID),
+    FOREIGN KEY (PositionID) REFERENCES `Position`(PositionID)
 );
 
 -- 4.Tao bang Group
@@ -38,7 +38,7 @@ CREATE TABLE IF NOT EXISTS `Group` (
     GroupName			NVARCHAR(255) NOT NULL UNIQUE KEY,
     CreatorID 			TINYINT UNSIGNED NOT NULL,
     CreateDate 			DATETIME DEFAULT NOW(),
-    FOREIGN KEY (CreatorID) REFERENCES `Account`(AccountID) ON DELETE CASCADE
+    FOREIGN KEY (CreatorID) REFERENCES `Account`(AccountID)
 );
 
 -- 5.Tao bang GroupAccount
@@ -48,8 +48,8 @@ CREATE TABLE IF NOT EXISTS GroupAccount (
     AccountID			TINYINT UNSIGNED NOT NULL,
 	JoinDate			DATETIME DEFAULT NOW(),
     PRIMARY KEY (GroupID,AccountID),
-    FOREIGN KEY (GroupID) REFERENCES `Group`(GroupID) ON DELETE CASCADE,
-    FOREIGN KEY (AccountID) REFERENCES `Account`(AccountID) ON DELETE CASCADE
+    FOREIGN KEY (GroupID) REFERENCES `Group`(GroupID),
+    FOREIGN KEY (AccountID) REFERENCES `Account`(AccountID)
 );
 
 -- 6.Tao bang TypeQuestion
@@ -75,9 +75,9 @@ CREATE TABLE IF NOT EXISTS Question (
     TypeID 				TINYINT UNSIGNED NOT NULL,			
     CreatorID 			TINYINT UNSIGNED NOT NULL,
     CreateDate 			DATETIME DEFAULT NOW(),
-    FOREIGN KEY (CategoryID) REFERENCES CategoryQuestion(CategoryID) ON DELETE CASCADE,
-    FOREIGN KEY (TypeID) REFERENCES TypeQuestion(TypeID) ON DELETE CASCADE,
-	FOREIGN KEY (CreatorID) REFERENCES `Account`(AccountID) ON DELETE CASCADE
+    FOREIGN KEY (CategoryID) REFERENCES CategoryQuestion(CategoryID),
+    FOREIGN KEY (TypeID) REFERENCES TypeQuestion(TypeID),
+	FOREIGN KEY (CreatorID) REFERENCES `Account`(AccountID)
 );
 
 -- 9.Tao bang Answer
@@ -87,7 +87,7 @@ CREATE TABLE IF NOT EXISTS Answer (
     Content				NVARCHAR(255) NOT NULL UNIQUE KEY,
 	QuestionID 			TINYINT UNSIGNED NOT NULL,
     isCorrect 			BIT DEFAULT 1,			
-	FOREIGN KEY (QuestionID) REFERENCES Question(QuestionID) ON DELETE CASCADE
+	FOREIGN KEY (QuestionID) REFERENCES Question(QuestionID)
 );
 
 -- 10.Tao bang Exam
@@ -100,8 +100,8 @@ CREATE TABLE IF NOT EXISTS Exam (
     Duration 			TINYINT UNSIGNED NOT NULL,		
 	CreatorID 			TINYINT UNSIGNED NOT NULL,
     CreateDate 			DATETIME DEFAULT NOW(),
-	FOREIGN KEY (CategoryID) REFERENCES Question(CategoryID) ON DELETE CASCADE,
-    FOREIGN KEY (CreatorID) REFERENCES `Account`(AccountID) ON DELETE CASCADE
+	FOREIGN KEY (CategoryID) REFERENCES Question(CategoryID),
+    FOREIGN KEY (CreatorID) REFERENCES `Account`(AccountID)
 );
 
 -- 11.Tao bang ExamQuestion
@@ -109,7 +109,7 @@ DROP TABLE IF EXISTS ExamQuestion;
 CREATE TABLE IF NOT EXISTS ExamQuestion (
     ExamID 				TINYINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
     QuestionID 			TINYINT UNSIGNED NOT NULL,	
-	FOREIGN KEY (QuestionID) REFERENCES Question(QuestionID) ON DELETE CASCADE 
+	FOREIGN KEY (QuestionID) REFERENCES Question(QuestionID)
 );
 
 

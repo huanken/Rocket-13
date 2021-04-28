@@ -17,15 +17,19 @@ WHERE	LENGTH(a.FullName) =
          FROM	`account`);
             
 --  5. Lấy ra thông tin account có full name dài nhất và thuộc phòng ban có id = 3
-SELECT 		* 
-FROM 		`Account` 
-WHERE 		LENGTH(Fullname) = (SELECT MAX(LENGTH(Fullname)) FROM `Account`) AND DepartmentID = 3
-ORDER BY 	Fullname DESC;
+WITH		 CTE_dep3 AS (
+	SELECT 	 * FROM `account` WHERE DepartmentID = 3
+)
+SELECT  	 *
+FROM		 CTE_dep3 
+WHERE		 LENGTH(FullName) = 
+			 (SELECT 	MAX(LENGTH(FullName)) FROM CTE_dep3)
+ORDER BY	 Fullname;		
 
 --  6. Lấy ra tên group đã tham gia trước ngày 20/12/2019
 SELECT  GroupName
 FROM	`group`
-WHERE	CreateDate < '2019-12-20 00:00:00';
+WHERE	CreateDate < '2019-12-20';
     
 --  7. Lấy ra ID của question có >= 4 câu trả lời
 SELECT 		QuestionID
@@ -34,7 +38,7 @@ GROUP BY 	QuestionID
 HAVING 		COUNT(1) >= 4;
 
 --  8.  Lấy ra các mã đề thi có thời gian thi >= 60 phút và được tạo trước ngày 20/12/2019
-SELECT 	ExamID
+SELECT 	`code`
 FROM	exam
 WHERE	Duration	 > 60
 AND 	CreateDate 	 > '2019-12-20';
@@ -53,7 +57,7 @@ WHERE	DepartmentID = 2;
 --  11. Lấy ra nhân viên có tên bắt đầu bằng chữ "D" và kết thúc bằng chữ "o"
 SELECT 	*
 FROM	`account`
-WHERE	FullName LIKE 'D%o';
+WHERE	SUBSTRING_INDEX(FullName, '.', 1) LIKE 'D%o';
 
 --  12. Xóa tất cả các exam được tạo trước ngày 20/12/2019
 DELETE 
@@ -63,7 +67,7 @@ WHERE	CreateDate	 < '2019-12-20';
 --  13. Xóa tất cả các question có nội dung bắt đầu bằng từ "câu hỏi"
 DELETE 
 FROM 	question
-WHERE	Content 	LIKE 'câu hỏi%';
+WHERE	SUBSTRING_INDEX(Content, '.', 2) 	LIKE 'câu hỏi%';
     
 --  14. Update thông tin của account có id = 5 thành tên "Nguyễn Bá Lộc" và email thành loc.nguyenba@vti.com.vn
 UPDATE 	`account` 

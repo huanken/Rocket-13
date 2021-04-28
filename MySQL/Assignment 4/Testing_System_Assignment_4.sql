@@ -24,16 +24,18 @@ GROUP BY 	a.DepartmentID
 HAVING 		So_Luong > 3;
 
 -- Question 5: Viết lệnh để lấy ra danh sách câu hỏi được sử dụng trong đề thi nhiều nhất
+WITH CTE_GetMaxCQuestion 
+AS	(SELECT	MAX(CountQuestion)
+								FROM		
+										(SELECT 		COUNT(QuestionID) AS CountQuestion
+										FROM			examquestion 				
+										GROUP BY		QuestionID) AS MaxQuestion)
+
 SELECT		q.QuestionID, q.Content, q.CategoryID, q.TypeID, q.CreatorID, q.CreateDate, COUNT(1) AS So_Luong
 FROM 		examquestion e
 INNER JOIN 	question q ON e.QuestionID = q.QuestionID
 GROUP BY 	q.Content	
-HAVING 		COUNT(q.Content) = (SELECT	MAX(CountQuestion)
-								FROM		
-										(SELECT 		COUNT(q.QuestionID) AS CountQuestion
-										FROM			examquestion e
-										INNER JOIN 		question q ON e.QuestionID = q.QuestionID
-										GROUP BY		q.QuestionID) AS MaxQuestion);
+HAVING 		COUNT(q.Content) = (SELECT * FROM CTE_GetMaxCQuestion);
 
 -- Question 6: Thông kê mỗi category Question được sử dụng trong bao nhiêu Question
 SELECT		c.*, COUNT(q.CategoryID) AS So_Luong
@@ -50,16 +52,18 @@ GROUP BY 	q.QuestionID
 ORDER BY 	So_Luong DESC;
 
 -- Question 8: Lấy ra Question có nhiều câu trả lời nhất
+WITH 		CTE_GetMaxCAnswer 
+AS (SELECT	MAX(CountAnswer)
+						FROM		
+							(SELECT		 COUNT(QuestionID) AS CountAnswer	
+							FROM		 answer 
+							GROUP BY	 QuestionID) AS MaxAnswer)
+
 SELECT		q.QuestionID, q.Content, q.CategoryID, q.TypeID, q.CreatorID, q.CreateDate, COUNT(a.QuestionID) AS So_Luong
 FROM 		question q
 INNER JOIN 	answer a ON q.QuestionID = a.QuestionID
 GROUP BY 	a.QuestionID
-HAVING 		So_Luong = (SELECT	MAX(CountAnswer)
-						FROM		
-							(SELECT COUNT(a.QuestionID) AS CountAnswer	
-							FROM	answer a
-							RIGHT JOIN  question q ON a.QuestionID = q.QuestionID 
-							GROUP BY		q.QuestionID) AS MaxAnswer);
+HAVING 		So_Luong = (SELECT * FROM CTE_GetMaxCAnswer);
 
 -- Question 9: Thống kê số lượng account trong mỗi group 
 SELECT		g.GroupID, g.GroupName, COUNT(ga.AccountID) AS So_Luong_Account
@@ -69,18 +73,26 @@ GROUP BY 	g.GroupID
 ORDER BY 	So_Luong_Account DESC;
 
 -- Question 10: Tìm chức vụ có ít người nhất
+WITH CTE_GetMinAccount 
+AS ( SELECT	MIN(CountID)
+			FROM		
+				(SELECT 	COUNT(AccountID)  AS CountID	
+				FROM		`account` 
+				GROUP BY	PositionID)		 AS MinAccount)
+                                    
 SELECT		p.PositionID, p.PositionName, COUNT(a.AccountID) AS So_Luong_Account
 FROM 		position p
-LEFT JOIN 	`account` a ON p.PositionID = a.PositionID
+INNER JOIN 	`account` a ON p.PositionID = a.PositionID
 GROUP BY	p.PositionID
-HAVING 		So_Luong_Account = (SELECT	MIN(CountID)
-								FROM		
-									(SELECT 	COUNT(a.AccountID)  AS CountID	
-									FROM		position p
-									RIGHT JOIN  `account` a			 ON p.PositionID = a.PositionID 
-									GROUP BY	p.PositionID)		 AS MinAccount);
+HAVING 		So_Luong_Account = (SELECT * FROM CTE_GetMinAccount);
 
 -- Question 11: Thống kê mỗi phòng ban có bao nhiêu dev, test, scrum master, PM
+SELECT		a.DepartmentID, d.DepartmentName, a.PositionID, p.PositionName, COUNT(1) as So_luong
+FROM 		`account` a
+INNER JOIN 	department d ON d.DepartmentID = a.DepartmentID
+INNER JOIN 	position p ON a.PositionID = p.PositionID
+GROUP BY	a.DepartmentID, a.PositionID
+ORDER BY	a.DepartmentID, a.PositionID;
 
 -- Question 12: Lấy thông tin chi tiết của câu hỏi bao gồm: thông tin cơ bản của question, loại câu hỏi, ai là người tạo ra câu hỏi, câu trả lời là gì, …
 SELECT		q.QuestionID, q.Content AS Noi_dung, cg.CategoryName AS Category, tq.TypeName AS Loai_cau_hoi, a.FullName AS Nguoi_tao, q.CreateDate AS Ngay_tao, a2.Content AS Tra_loi

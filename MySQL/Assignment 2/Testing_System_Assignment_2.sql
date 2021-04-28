@@ -1,14 +1,14 @@
 -- 1.Chen du lieu vao bang Department
 INSERT INTO Department(DepartmentName)
-VALUES				(N'Marketing'	),
-                    (N'Sale'		),
-                    (N'Bảo vệ'		),
-                    (N'Nhân sự'		),
-                    (N'Kỹ thuật'	),
-                    (N'Tài chính'	),
+VALUES				(N'Marketing'),
+                    (N'Sale'),
+                    (N'Bảo vệ'),
+                    (N'Nhân sự'),
+                    (N'Kỹ thuật'),
+                    (N'Tài chính'),
                     (N'Phó giám đốc'),
-                    (N'Thư kí'		),
-                    (N'Bán hàng'	);
+                    (N'Thư kí'),
+                    (N'Bán hàng');
 
 -- 2.Chen du lieu vao bang Poisition
 INSERT INTO Position	(PositionName	) 
@@ -24,7 +24,7 @@ VALUES 				('gmail111111@gmail.com'	  		, 'black'	 		,'Nguyễn Văn A'			,   '2
                     ('gmail111114@gmail.com'	  		, 'yellow'	 		,'Nguyễn Văn D'			,   '5'			,   '3'		,'2021-05-30'),
                     ('gmail111115@gmail.com'	  		, 'brown'	 		,'Nguyễn Văn E'			,   '1'			,   '2'		,'2021-09-11'),
                     ('gmail111116@gmail.com'	  		, 'green'	 		,'Nguyễn Văn F'			,   '2'			,   '4'		,'2021-05-02'),
-                    ('gmail111117@gmail.com'	  		, 'blue'	 		,'Nguyễn Văn G'			,   '1'			,   '1'		,  DEFAULT	 ),
+                    ('gmail111117@gmail.com'	  		, 'blue'	 		,'Nguyễn Văn G'			,   '1'			,   '1'		,'2021-04-01'),
                     ('gmail111118@gmail.com'	  		, 'turtle'	 		,'Nguyễn Văn H'			,   '4'			,   '2'		,'2021-08-07'),
                     ('gmail111119@gmail.com'	  		, 'white'	 		,'Nguyễn Văn O'			,   '3'			,   '3'		,'2021-09-19'),
                     ('gmail111110@gmail.com'	  		, 'ken'	 			,'Nguyễn Sinh Huân'		,   '5'			,   '1'		,'2021-11-27');
@@ -75,7 +75,7 @@ VALUES 								('SQL'			),
 -- 8.Chen du lieu vao bang Question
 INSERT INTO Question	(Content			, CategoryID, TypeID		, CreatorID	, CreateDate )
 VALUES 					(N'Câu hỏi về SQL'	,	1		,   '1'			,   '2'		,'2021-04-25'),
-						(N'Câu Hỏi về HQL'	,	2		,   '2'			,   '10'	,'2021-04-23'),
+						(N'Câu Hỏi về HQL'	,	2		,   '2'			,   '10'		,'2021-04-23'),
                         (N'Câu Hỏi về IQL'	,	3		,   '1'			,   '9'		,'2021-04-17'),
                         (N'Câu Hỏi về DQL'	,	4		,   '2'			,   '8'		,'2021-04-21'),
                         (N'Câu Hỏi về EQL'	,	5		,   '2'			,   '2'		,'2021-04-22'),
