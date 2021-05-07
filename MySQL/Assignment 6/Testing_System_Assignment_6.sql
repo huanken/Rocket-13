@@ -16,32 +16,31 @@ CALL proc_infodepartment ('Sale');
 -- Question 2: Tạo store để in ra số lượng account trong mỗi group
 DROP PROCEDURE IF EXISTS proc_countacc;
 DELIMITER $$
-CREATE PROCEDURE proc_countacc()
+CREATE PROCEDURE proc_countacc(IN in_group_name NVARCHAR(50))
 BEGIN
- SELECT 	ga.GroupID, g.GroupName, COUNT(AccountID) as So_Luong
+ SELECT 	ga.GroupID, g.GroupName, COUNT(ga.AccountID) as So_Luong
  FROM 		groupaccount ga
  INNER JOIN `group`	g 	ON ga.GroupID = g.GroupID
- GROUP BY	ga.GroupID
- ORDER BY   So_luong;
+ WHERE		g.GroupName LIKE CONCAT('%',in_group_name,'%');
 END$$
 DELIMITER ;
 
-CALL proc_countacc ();
+CALL proc_countacc ('Sale');
 
 -- Question 3: Tạo store để thống kê mỗi type question có bao nhiêu question được tạo trong tháng hiện tại
 DROP PROCEDURE IF EXISTS proc_ques_in_months;
 DELIMITER $$
-CREATE PROCEDURE proc_ques_in_months()
+CREATE PROCEDURE proc_ques_in_months(IN in_type_id TINYINT UNSIGNED)
 BEGIN
  SELECT		q.TypeID,t.TypeName,COUNT(q.TypeID) AS So_luong
  FROM		question q
  INNER JOIN typequestion t ON q.TypeID = t.TypeID
- WHERE		MONTH(q.CreateDate) = MONTH(NOW()) AND YEAR(q.CreateDate) = YEAR(NOW())
+ WHERE		MONTH(q.CreateDate) = MONTH(NOW()) AND YEAR(q.CreateDate) = YEAR(NOW()) AND q.TypeID = in_type_id
  GROUP BY 	q.TypeID;
 END$$
 DELIMITER ;
 
-CALL proc_ques_in_months ();
+CALL proc_ques_in_months (2);
 
 -- Question 4: Tạo store để trả ra id của type question có nhiều câu hỏi nhất
 DROP PROCEDURE IF EXISTS proc_maxtype_id;
@@ -80,27 +79,25 @@ SELECT @type_name;
 
 /* Question 6: Viết 1 store cho phép người dùng nhập vào 1 chuỗi và trả về group có tên chứa chuỗi 
 của người dùng nhập vào hoặc trả về user có username chứa chuỗi của người dùng nhập vào */
--- Nhập:1 -- Trả về Group có tên chứa chuỗi
--- Nhập:2 -- Trả về User có username chứa chuỗi 
 DROP PROCEDURE IF EXISTS proc_maxtype_name;
 DELIMITER $$
-CREATE PROCEDURE proc_maxtype_name  (IN	in_string VARCHAR(50), IN in_select TINYINT)
+CREATE PROCEDURE proc_maxtype_name  (IN	in_string VARCHAR(50))
 BEGIN
-	IF in_select = 1 THEN
-		SELECT 	*
+		SELECT 	GroupName
         FROM	`Group`
-        WHERE	GroupName LIKE in_string;
-	ELSE
-		SELECT 	Email, Username, FullName
+        WHERE	GroupName LIKE CONCAT('%',in_string,'%')
+        UNION
+		SELECT 	Username
         FROM	`Account`
-        WHERE	Username LIKE in_string;
-	END IF;
+        WHERE	Username LIKE CONCAT('%',in_string,'%');
 END$$
 DELIMITER ;
 
-CALL proc_maxtype_name('a',1);
-CALL proc_maxtype_name('lgoodge0',2);
-
+/* Question 7: Viết 1 store cho phép người dùng nhập vào thông tin fullName, email và trong store sẽ tự động gán:
+	username sẽ giống email nhưng bỏ phần @..mail đi 
+	positionID: sẽ có default là developer
+	departmentID: sẽ được cho vào 1 phòng chờ
+	Sau đó in ra kết quả tạo thành công */
 /* Question 7: Viết 1 store cho phép người dùng nhập vào thông tin fullName, email và trong store sẽ tự động gán:
 	username sẽ giống email nhưng bỏ phần @..mail đi 
 	positionID: sẽ có default là developer
@@ -108,14 +105,14 @@ CALL proc_maxtype_name('lgoodge0',2);
 	Sau đó in ra kết quả tạo thành công */
 DROP PROCEDURE IF EXISTS proc_info_input;
 DELIMITER $$
-CREATE PROCEDURE proc_info_input  (IN	in_fullname NVARCHAR(50), IN in_email VARCHAR(50))
+CREATE PROCEDURE proc_info_input  (IN in_fullname NVARCHAR(50), IN in_email VARCHAR(50))
 BEGIN
-		DECLARE Username VARCHAR(50) DEFAULT SUBSTRING_INDEX(in_email,'@',1);
-        DECLARE PositionID TINYINT UNSIGNED DEFAULT 1;
-        DECLARE DepartmentID TINYINT UNSIGNED DEFAULT NULL;
-        DECLARE CreateDate DATETIME DEFAULT NOW();
-        INSERT INTO `account`   (Email,		Username, FullName, 	DepartmentID, PositionID , CreateDate)
-        VALUES 					(in_email,	Username, in_fullname,	DepartmentID, PositionID,  CreateDate);
+		DECLARE v_Username VARCHAR(50) DEFAULT SUBSTRING_INDEX(in_email,'@',1);
+        DECLARE v_PositionID TINYINT UNSIGNED DEFAULT 1;
+        DECLARE v_DepartmentID TINYINT UNSIGNED DEFAULT 13;
+        DECLARE v_CreateDate DATETIME DEFAULT NOW();
+        INSERT INTO `account`   (Email,		Username,	 FullName, 		DepartmentID,    PositionID,   CreateDate)
+        VALUES 					(in_email,	v_Username,  in_fullname,	v_DepartmentID, v_PositionID,  v_CreateDate);
         
         SELECT 	 * 
         FROM	 `account` a
@@ -123,7 +120,7 @@ BEGIN
 END$$
 DELIMITER ;
     
-CALL proc_info_input(N'Nguyễn Văn A','email2@gmail.com');
+CALL proc_info_input(N'Nguyễn Văn X','emailx@gmail.com');
 
 /* Question 8: Viết 1 store cho phép người dùng nhập vào Essay hoặc Multiple-Choice
  để thống kê câu hỏi essay hoặc multiple-choice nào có content dài nhất */
@@ -192,7 +189,7 @@ BEGIN
 END$$
 DELIMITER ;
 
-CALL proc_delete_department('Legal');
+CALL proc_delete_department('Training');
 
 -- Question 12: Viết store để in ra mỗi tháng có bao nhiêu câu hỏi được tạo trong năm nay
 DROP PROCEDURE IF EXISTS proc_ques_per_months;
