@@ -41,13 +41,17 @@ DELIMITER $$
 	CREATE TRIGGER trg_one_gr_five_user
 	BEFORE INSERT ON `groupaccount`
     FOR EACH ROW
-    BEGIN		
-		IF (SELECT GroupID FROM groupaccount GROUP BY GroupID HAVING COUNT(NEW.AccountID) > 5 ) THEN
+    BEGIN
+		DECLARE v_count_acc INT;
+        SELECT COUNT(AccountID) INTO v_count_acc FROM groupaccount 
+        WHERE	GroupID = NEW.GroupID;
+		IF (v_count_acc > 5 ) THEN
 			SIGNAL SQLSTATE '12345'
             SET MESSAGE_TEXT = 'No more than 5 user in 1 group';
 		END IF;
     END$$    
 DELIMITER ;
+
 
 -- Question 4: Cấu hình 1 bài thi có nhiều nhất là 10 Question
 DROP TRIGGER IF EXISTS trg_one_exam_ten_ques;
@@ -55,13 +59,19 @@ DELIMITER $$
 	CREATE TRIGGER trg_one_exam_ten_ques
 	BEFORE INSERT ON `examquestion`
     FOR EACH ROW
-    BEGIN		
-		IF (SELECT ExamID FROM examquestion GROUP BY ExamID HAVING COUNT(NEW.QuestionID) > 10 ) THEN
+    BEGIN
+		DECLARE v_count_ques INT;
+        SELECT  COUNT(QuestionID) FROM examquestion
+        WHERE   ExamID = NEW.ExamID;
+		IF ( v_count_ques > 10 ) THEN
 			SIGNAL SQLSTATE '12345'
             SET MESSAGE_TEXT = 'No more than 10 question in 1 exam';
 		END IF;
     END$$    
 DELIMITER ;
+
+INSERT INTO groupaccount	 (GroupID, AccountID,   JoinDate) 
+VALUES						 (1, 			1, 		'2020-05-11 00:00:00');
 
 /* Question 5: Tạo trigger không cho phép người dùng xóa tài khoản có email là 
  admin@gmail.com (đây là tài khoản admin, không cho phép user xóa), 
