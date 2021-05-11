@@ -70,8 +70,6 @@ DELIMITER $$
     END$$    
 DELIMITER ;
 
-INSERT INTO groupaccount	 (GroupID, AccountID,   JoinDate) 
-VALUES						 (1, 			1, 		'2020-05-11 00:00:00');
 
 /* Question 5: Tạo trigger không cho phép người dùng xóa tài khoản có email là 
  admin@gmail.com (đây là tài khoản admin, không cho phép user xóa), 
@@ -101,12 +99,14 @@ DELIMITER $$
 	CREATE TRIGGER trg_bf_del_acc
 	BEFORE INSERT ON `account`
     FOR EACH ROW
-    BEGIN		       
-         IF NEW.DepartmentID IS NULL THEN 
+    BEGIN		  
+    DECLARE	v_wait_room INT;
+	SELECT DepartmentID INTO v_wait_room FROM department WHERE DepartmentName = 'Waiting Room';
+	IF NEW.DepartmentID IS NULL THEN 
 			UPDATE 	 `account`
-            SET		 DepartmentID = 13
+            SET		 NEW.DepartmentID = v_wait_room
             WHERE	 AccountID = NEW.AccountID;
-		END IF; 
+	END IF; 
     END$$    
 DELIMITER ;
 
@@ -131,7 +131,7 @@ DELIMITER $$
 	SELECT 		COUNT(AnswerID) INTO v_count_correct_answer
     FROM 		answer 
 	WHERE		QuestionID = NEW.QuestionID AND isCorrect = 1;
-	IF (v_count_question > 4 OR v_count_correct_answer >2 ) THEN
+	IF (v_count_question > 4) OR (v_count_correct_answer >2 ) THEN
 		SIGNAL SQLSTATE '12345'
 		SET MESSAGE_TEXT = 'No more than 4 answers and 2 correct answers in 1 question ';
 	END IF;
@@ -174,27 +174,31 @@ END $$
 DELIMITER ;
 
 DELETE FROM exam
-WHERE		ExamID = 5;
+WHERE		ExamID = 9;
 
 /* Question 10: Viết trigger chỉ cho phép người dùng chỉ được update, delete các 
  question khi question đó chưa nằm trong exam nào */
 DROP TRIGGER IF EXISTS trg_exam_till_2days;
 DELIMITER $$
 CREATE TRIGGER trg_exam_till_2days
-BEFORE UPDATE ON `question`
+BEFORE DELETE ON `question`
 FOR EACH ROW
 BEGIN		
 	DECLARE 	v_ques_not_in_exam INT;
-	SELECT 		QuestionID INTO v_ques_not_in_exam 
+    SET 	    v_ques_not_in_exam = -1;
+	SELECT 		COUNT(1) INTO v_ques_not_in_exam 
     FROM 		question q 
     LEFT JOIN 	examquestion e ON q.QuestionID = e.QuestionID
-    WHERE		e.ExamID IS NULL;
-	IF  v_ques_not_in_exam != NEW.QuestionID THEN 
+    WHERE		e.ExamID = OLD.QuestionID ;
+	IF  -1 != v_ques_not_in_exam THEN 
 		SIGNAL SQLSTATE '12345'
 		SET MESSAGE_TEXT = 'Cann\'t delete this question';
 	END IF;
-END $$    
+END $$   
 DELIMITER ;
+    
+DELETE FROM question
+WHERE 		questionID = 1;
 
 /* Question 12: Lấy ra thông tin exam trong đó: 
 Duration <= 30 thì sẽ đổi thành giá trị "Short time"
@@ -223,11 +227,12 @@ FROM		groupaccount
 GROUP BY	GroupID;
 
 /* Question 14: Thống kê số mỗi phòng ban có bao nhiêu user, nếu phòng ban nào 
- không có user thì sẽ thay đổi giá trị 0 thành "Không có Use r" */
+ không có user thì sẽ thay đổi giá trị 0 thành "Không có User" */
 SELECT 		d.DepartmentID, 
-			CASE	WHEN COUNT(a.AccountID) = 0 THEN "Không có User"
+			CASE	
+            WHEN COUNT(a.AccountID) = 0 THEN "Không có User"
             ELSE	COUNT(a.AccountID)
             END	AS So_luong
 FROM		`account` a
 RIGHT JOIN	department d ON a.DepartmentID= d.DepartmentID
-GROUP BY	d.DepartmentID
+GROUP BY	d.DepartmentID;
