@@ -187,9 +187,8 @@ BEGIN
 	DECLARE 	v_ques_not_in_exam INT;
     SET 	    v_ques_not_in_exam = -1;
 	SELECT 		COUNT(1) INTO v_ques_not_in_exam 
-    FROM 		question q 
-    LEFT JOIN 	examquestion e ON q.QuestionID = e.QuestionID
-    WHERE		e.ExamID = OLD.QuestionID ;
+    FROM 		examquestion e
+    WHERE		e.QuestionID = OLD.QuestionID ;
 	IF  -1 != v_ques_not_in_exam THEN 
 		SIGNAL SQLSTATE '12345'
 		SET MESSAGE_TEXT = 'Cann\'t delete this question';
