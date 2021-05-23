@@ -1,6 +1,7 @@
 package com.vti.entity;
 
-import java.time.LocalDate;
+
+import java.util.Date;
 
 public class Exam {
 	public int id;
@@ -8,6 +9,6 @@ public class Exam {
 	public String title;
 	public CategoryQuestion categoryQuestion;
 	public int duration;
-	public Account account;
-	public LocalDate createDate;
+	public Account creator;
+	public Date createDate;
 }

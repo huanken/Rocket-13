@@ -7,7 +7,7 @@ public class Question {
 	public String content;
 	public CategoryQuestion categoryQuestion;
 	public TypeQuestion typeQuestion;
-	public Account account;
+	public Account creator;
 	public LocalDate createDate;
 
 }
