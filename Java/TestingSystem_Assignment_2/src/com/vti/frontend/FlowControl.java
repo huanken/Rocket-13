@@ -345,6 +345,7 @@ public class FlowControl {
 		} while (i < departments.length);
 		System.out.println("-------------------------------------------------------------------");
 	}	
+	
 }
 
 
