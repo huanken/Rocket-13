@@ -15,5 +15,6 @@ public class Program {
 		
 	//	Exercise_6 exercise_6 = new Exercise_6();
 	//	exercise_6.question_1();
+	//	exercise_6.question_2();
 	}
 }
