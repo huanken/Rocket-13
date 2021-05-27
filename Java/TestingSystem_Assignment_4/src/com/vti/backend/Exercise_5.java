@@ -1,10 +1,8 @@
 package com.vti.backend;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.Scanner;
-
-import javax.swing.text.Document;
-
 import com.vti.entity.Worker;
 import com.vti.entity.Book;
 import com.vti.entity.Employee;
@@ -17,6 +15,7 @@ import com.vti.entity.Staff;
 public class Exercise_5 {
 	ArrayList<Employee> employees = new ArrayList<>();
 	ArrayList<com.vti.entity.Document> documents = new ArrayList<>();
+	public static int id = 0;
 	Scanner scanner;
 
 	// Quản lí cán bộ
@@ -138,7 +137,7 @@ public class Exercise_5 {
 		scanner = new Scanner(System.in);
 		String nameSearch = scanner.nextLine();
 		for (Employee employee : employees) {
-			if (employee.name.equals(nameSearch)) {
+			if (employee.getName().equals(nameSearch)) {
 				System.out.println(employee.toString());
 				return;
 			}
@@ -153,16 +152,15 @@ public class Exercise_5 {
 	}
 
 	private void deleteEmployee() {
-		System.out.println("Nhập vào tên cán bộ cần xóa: ");
-		scanner = new Scanner(System.in);
-		String nameDelete = scanner.nextLine();
-		for (Employee employee : employees) {
-			if (employee.name.equals(nameDelete)) {
-				employees.remove(employee);
-				return;
+		System.out.println("Nhập tên cần xóa thông tin: ");
+		String delName = scanner.next();
+		Iterator<Employee> iterator = employees.iterator();
+		while (iterator.hasNext()) {
+			Employee employee = (Employee) iterator.next();
+			if (employee.getName().equals(delName)) {
+				iterator.remove();
 			}
 		}
-		System.out.println("Không tìm thấy cán bộ này");
 	}
 
 	// Quản lí tài liệu
@@ -210,55 +208,52 @@ public class Exercise_5 {
 		switch (choose) {
 		case 1:
 			Book book = new Book();
-			System.out.println("Nhập mã tài liệu: ");
-			scanner = new Scanner(System.in);
-			book.id = scanner.nextInt();
+			id++;
+			book.setId(id);
 			System.out.println("Nhập nhà xuất bản: ");
 			scanner = new Scanner(System.in);
-			book.publisher = scanner.nextLine();
+			book.setPublisher(scanner.nextLine());
 			System.out.println("Nhập số bản phát hành: ");
 			scanner = new Scanner(System.in);
-			book.amount = scanner.nextInt();
+			book.setAmount(scanner.nextInt());
 			System.out.println("Nhập tên tác giả: ");
 			scanner = new Scanner(System.in);
-			book.author = scanner.nextLine();
+			book.setAuthor(scanner.nextLine());
 			System.out.println("Nhập số trang: ");
 			scanner = new Scanner(System.in);
-			book.numberOfPages = scanner.nextInt();
+			book.setNumberOfPages(scanner.nextInt());
 			documents.add(book);
 			break;
 		case 2:
 			Jounal jounal = new Jounal();
-			System.out.println("Nhập mã tài liệu: ");
-			scanner = new Scanner(System.in);
-			jounal.id = scanner.nextInt();
+			id++;
+			jounal.setId(id);
 			System.out.println("Nhập nhà xuất bản: ");
 			scanner = new Scanner(System.in);
-			jounal.publisher = scanner.nextLine();
+			jounal.setPublisher(scanner.nextLine());
 			System.out.println("Nhập số bản phát hành: ");
 			scanner = new Scanner(System.in);
-			jounal.amount = scanner.nextInt();
+			jounal.setAmount(scanner.nextInt());
 			System.out.println("Nhập số phát hành: ");
-			jounal.number = scanner.nextInt();
+			jounal.setNumber(scanner.nextInt());
 			System.out.println("Nhập tháng phát hành: ");
 			scanner = new Scanner(System.in);
-			jounal.month = scanner.nextLine();
+			jounal.setMonth(scanner.nextLine());
 			documents.add(jounal);
 			break;
 		case 3:
 			Newspaper newspaper = new Newspaper();
-			System.out.println("Nhập mã tài liệu: ");
-			scanner = new Scanner(System.in);
-			newspaper.id = scanner.nextInt();
+			id++;
+			newspaper.setId(id);
 			System.out.println("Nhập nhà xuất bản: ");
 			scanner = new Scanner(System.in);
-			newspaper.publisher = scanner.nextLine();
+			newspaper.setPublisher(scanner.nextLine());
 			System.out.println("Nhập số bản phát hành: ");
 			scanner = new Scanner(System.in);
-			newspaper.amount = scanner.nextInt();
-			System.out.println("Nhập tháng phát hành: ");
+			newspaper.setAmount(scanner.nextInt());
+			System.out.println("Nhập ngày phát hành: ");
 			scanner = new Scanner(System.in);
-			newspaper.publishDay = scanner.nextLine();
+			newspaper.setPublishDay(scanner.nextLine());
 			documents.add(newspaper);
 			break;
 		default:
@@ -268,16 +263,18 @@ public class Exercise_5 {
 	}
 
 	private void deleteDocument() {
-		System.out.println("Nhập vào mã tài liệu cần xóa: ");
-		scanner = new Scanner(System.in);
-		int idDelete = scanner.nextInt();
-		for (com.vti.entity.Document document : documents) {
-			if (document.id == idDelete) {
-				documents.remove(document);
-				return;
+		int count = 0;
+		System.out.println("Nhập id tài liệu cần xóa thông tin: ");
+		int delId = scanner.nextInt();
+		Iterator<com.vti.entity.Document> iterator = documents.iterator();
+		while (iterator.hasNext()) {
+			com.vti.entity.Document document = (com.vti.entity.Document) iterator.next();
+			if (document.getId() == delId) {
+				iterator.remove();
+				count++;
 			}
 		}
-		System.out.println("Không tìm thấy tài liệu này");
+		System.out.println("Đã xóa " + count + " bản ghi");
 	}
 
 	private void showDocument() {
@@ -320,8 +317,5 @@ public class Exercise_5 {
 			break;
 		}
 	}
-	
-	public void question_3() {
-		
-	}
+
 }

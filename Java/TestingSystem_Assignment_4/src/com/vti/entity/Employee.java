@@ -22,6 +22,14 @@ public class Employee {
 		this.address = address;
 	}
 
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
 	@Override
 	public String toString() {
 		return " name = " + name + ", age = " + age + ", gender = " + gender + ", address = " + address +" ";
