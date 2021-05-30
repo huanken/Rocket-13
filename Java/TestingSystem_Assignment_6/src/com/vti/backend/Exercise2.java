@@ -10,7 +10,8 @@ import com.vti.ultis.ScannerUtils;
 
 public class Exercise2 {
 	static ScannerUtils scannerUtils = new ScannerUtils();
-	//Question 1
+
+	// Question 1
 	public void question1() {
 		try {
 			float result = divide(7, 0);
@@ -23,8 +24,8 @@ public class Exercise2 {
 	private static float divide(int i, int j) {
 		return i / j;
 	}
-	
-	//Question 2
+
+	// Question 2
 	public void question2() {
 		try {
 			float result = divide(7, 0);
@@ -36,7 +37,7 @@ public class Exercise2 {
 		}
 	}
 
-	//Question 3
+	// Question 3
 	public void question3() {
 		int[] numbers = { 1, 2, 3 };
 		try {
@@ -46,8 +47,9 @@ public class Exercise2 {
 		}
 	}
 
-	//Question 4
+	// Question 4
 	static String[] departments = { "Sale", "Marketing", "Dep3" };
+
 	public void question4() {
 		getIndex(0);
 		getIndex(1);
@@ -62,40 +64,41 @@ public class Exercise2 {
 			System.err.println("Cannot find department !");
 		}
 	}
-	
-	//Question 5
+
+	// Question 5
 	public static int inputAge() {
 		while (true) {
 			System.out.println("Nhập tuổi: ");
-			int age = scannerUtils.inputInt("Wrong inputing! Please input an age as int, input again.");
+			int age = scannerUtils.inputInt("Wrong inputing! Please input an age as int, input again: ");
 
 			if (age <= 0) {
-				System.err.println("Wrong inputing! The age must be greater than 0, please input again.");
+				System.err.println("Wrong inputing! The age must be greater than 0, please input again: ");
 
 			} else {
 				return age;
 			}
 		}
 	}
+
 	public void question5() {
 		int age = inputAge();
 		System.out.println("Tuổi của bạn: " + age);
-	}	
-	
+	}
+
 	// Question 9
 	public void question9() {
 		Department department = new Department();
 		System.out.println(department);
-		
+
 		Position position = new Position();
 		System.out.println(position);
 	}
-	
+
 	// Question 10
 	public void question10() throws InvalidAgeInputingException {
 		ArrayList<Account> accounts = new ArrayList<Account>();
 		Scanner scanner = new Scanner(System.in);
-		int choose = 1 ;
+		int choose = 1;
 		do {
 			Account acounti = new Account();
 			accounts.add(acounti);
@@ -106,35 +109,38 @@ public class Exercise2 {
 			choose = scanner.nextInt();
 		} while (choose == 1);
 	}
-	
-	// Question 11
-	public static int inputAge(String errorMessage) throws InvalidAgeInputingException{
-		while (true) {
-			while (true) {
-					Scanner scanner = new Scanner(System.in);
-					int age = Integer.parseInt(scanner.nextLine());
-					if (age <= 0) {
-						throw new InvalidAgeInputingException(errorMessage);
-					}
-					else {
-						return age;
-					}
-			}
-		}
-	}
-	
-	// Question 12
-	public static int inputAccountAge(String errorMessage) throws InvalidAgeInputingException {
-		while (true) {
-			System.out.println("Nhập tuổi: ");
-			int age = scannerUtils.inputInt("Wrong inputing! Please input an age as int, input again.");
-			if (age <= 18) {
-				System.err.println("Your age must be greater than 18");
 
-			} else {
-				return age;
+	// Question 11
+	public static int inputAge(String errorMessage) throws InvalidAgeInputingException {
+		while (true) {
+			try {
+				Scanner scanner = new Scanner(System.in);
+				int age = Integer.parseInt(scanner.nextLine());
+				if (age <= 0) {
+					throw new InvalidAgeInputingException(errorMessage);
+				} else {
+					return age;
+				}
+			} catch (InvalidAgeInputingException e) {
+				System.err.println(e.getMessage());
 			}
-			
 		}
 	}
+
+	// Question 12
+	public static int inputAccountAge() throws InvalidAgeInputingException {
+		while (true) {
+			try {
+				int age = inputAge("The age must be greater than 0");//inputAge question 11
+				if (age < 18) {
+					System.err.println("Your age must be greater than 18");
+				} else {
+					return age;
+				}
+			} catch (InvalidAgeInputingException e) {
+				System.err.println(e.getMessage());
+			}
+		}
+	}
+	
 }

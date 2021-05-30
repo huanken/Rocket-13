@@ -31,8 +31,10 @@ public class Account {
 		fullname = ScannerUtils.inputString("Please input a String, please input again.");
 
 		System.out.println("Nhập tuổi của bạn: ");
-		age = Exercise2.inputAge("The age must be greater than 0");
-		
+		// Question 11
+	//	age = Exercise2.inputAge("The age must be greater than 0");
+		// Question 12
+		age = Exercise2.inputAccountAge();
 	}
 
 	
